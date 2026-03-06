@@ -1,0 +1,2 @@
+"""Machine configuration domain."""
+

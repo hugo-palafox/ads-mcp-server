@@ -1,0 +1,2 @@
+[console_scripts]
+ads-mcp = cli.main:app

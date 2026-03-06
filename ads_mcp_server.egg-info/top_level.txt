@@ -1,0 +1,6 @@
+ads
+catalog
+cli
+machine
+mcp_app
+memory
