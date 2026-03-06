@@ -15,6 +15,8 @@ def build_server() -> FastMCP:
     server.tool()(tools.read_tag)
     server.tool()(tools.read_tags)
     server.tool()(tools.read_memory)
+    server.tool()(tools.request_tag_write)
+    server.tool()(tools.confirm_tag_write)
     return server
 
 

@@ -1,3 +1,25 @@
+## 0.1.2 - 2026-03-06
+
+### Added
+- MCP write tools: `request_tag_write` and `confirm_tag_write`.
+- Two-step write confirmation workflow with one-time, in-memory pending request IDs.
+- ADS write support via `BeckhoffADSClient.write_tag(...)`.
+- Unit tests for write flow and ADS write datatype resolution.
+
+### Changed
+- MCP server tool registration now includes write tools.
+- Project docs updated to describe write flow, confirmation protocol, and guardrails.
+
+### Fixed
+- N/A
+
+### Removed
+- N/A
+
+### Notes
+- Writes are blocked unless `mcp.read_only` is set to `false` for the machine.
+- Write guardrail allows only tags whose full name contains `button` (case-insensitive).
+
 ## 0.1.1 - 2026-03-05
 
 ### Added

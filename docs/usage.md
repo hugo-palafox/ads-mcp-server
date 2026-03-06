@@ -51,7 +51,7 @@ ads-mcp --help
 ## 5. Setup machine config
 
 ```powershell
-ads-mcp setup-machine --machine M1 --ip 127.0.0.1 --ams-net-id 192.168.4.1.1.1 --ads-port 851
+ads-mcp setup-machine --machine Machine1 --ip 127.0.0.1 --ams-net-id 192.168.4.1.1.1 --ads-port 851
 ```
 
 This creates `data/machines/M1.json`.
@@ -59,34 +59,34 @@ This creates `data/machines/M1.json`.
 ## 6. Discover tags from PLC
 
 ```powershell
-ads-mcp discover --machine M1
+ads-mcp discover --machine Machine1
 ```
 
-This updates `discovered_tags` in `data/machines/M1.json`.
+This updates `discovered_tags` in `data/machines/Machine1.json`.
 
 ## 7. Explore discovered catalog
 
 ```powershell
-ads-mcp list-groups --machine M1
-ads-mcp list-tags --machine M1
-ads-mcp list-tags --machine M1 --group Globals
+ads-mcp list-groups --machine Machine1
+ads-mcp list-tags --machine Machine1
+ads-mcp list-tags --machine Machine1 --group Globals
 ```
 
 ## 8. Build curated memory
 
 ```powershell
-ads-mcp memory add-tag --machine M1 --tag Globals.bRun --alias machine_running
-ads-mcp memory add-group --machine M1 --group Globals
-ads-mcp memory list --machine M1
+ads-mcp memory add-tag --machine Machine1 --tag Globals.bRun --alias machine_running
+ads-mcp memory add-group --machine Machine1 --group Globals
+ads-mcp memory list --machine Machine1
 ```
 
-This creates/updates `data/memory/M1.memory.json`.
+This creates/updates `data/memory/Machine1.memory.json`.
 
 ## 9. Read on-demand values
 
 ```powershell
-ads-mcp read --machine M1 --tag Globals.bRun
-ads-mcp read-memory --machine M1
+ads-mcp read --machine Machine1 --tag Globals.bRun
+ads-mcp read-memory --machine Machine1
 ```
 
 ## 10. Start MCP server
