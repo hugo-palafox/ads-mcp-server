@@ -19,18 +19,18 @@ pip install -e .
 ## CLI commands
 
 ```bash
-ads-mcp setup-machine --machine M1 --ip 127.0.0.1 --ams-net-id 192.168.4.1.1.1 --ads-port 851
-ads-mcp discover --machine M1
-ads-mcp list-groups --machine M1
-ads-mcp list-tags --machine M1
-ads-mcp list-tags --machine M1 --group Globals
-ads-mcp memory add-tag --machine M1 --tag Globals.bRun
-ads-mcp memory add-group --machine M1 --group Globals
-ads-mcp memory remove-tag --machine M1 --tag Globals.bRun
-ads-mcp memory list --machine M1
-ads-mcp memory clear --machine M1
-ads-mcp read --machine M1 --tag Globals.bRun
-ads-mcp read-memory --machine M1
+ads-mcp setup-machine --machine Machine1 --ip 127.0.0.1 --ams-net-id 199.4.42.250.1.1 --ads-port 851
+ads-mcp discover --machine Machine1
+ads-mcp list-groups --machine Machine1
+ads-mcp list-tags --machine Machine1
+ads-mcp list-tags --machine Machine1 --group Globals
+ads-mcp memory add-tag --machine Machine1 --tag Globals.bRun
+ads-mcp memory add-group --machine Machine1 --group Globals
+ads-mcp memory remove-tag --machine Machine1 --tag Globals.bRun
+ads-mcp memory list --machine Machine1
+ads-mcp memory clear --machine Machine1
+ads-mcp read --machine Machine1 --tag Globals.bRun
+ads-mcp read-memory --machine Machine1
 ads-mcp serve
 ```
 
@@ -52,7 +52,7 @@ Writes are exposed through MCP tools (not direct CLI write commands).
 {
   "tool": "request_tag_write",
   "args": {
-    "machine_id": "M1",
+    "machine_id": "Machine1",
     "tag_name": "MAIN.StartButton",
     "value": true
   }
@@ -76,7 +76,7 @@ Response (example):
 {
   "tool": "confirm_tag_write",
   "args": {
-    "machine_id": "M1",
+    "machine_id": "Machine1",
     "request_id": "f0f4f8d3-7f2f-4e8a-93c8-6d8028e2d2e7",
     "confirmed": true
   }
