@@ -34,3 +34,14 @@ def setup_machine(
     repository.save(machine)
     return machine
 
+
+def set_write_permission(
+    repository: MachineRepository,
+    machine_id: str,
+    enabled: bool,
+) -> MachineConfig:
+    machine = repository.get(machine_id)
+    machine.mcp.read_only = not enabled
+    repository.save(machine)
+    return machine
+

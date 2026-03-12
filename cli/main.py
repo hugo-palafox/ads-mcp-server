@@ -10,7 +10,7 @@ from ads.discovery import run_discovery
 from ads.reader import read_multiple_tags, read_single_tag
 from catalog.service import CatalogService
 from machine.repository import MachineRepository
-from machine.setup import setup_machine
+from machine.setup import set_write_permission, setup_machine
 from memory.manager import MemoryManager
 
 app = typer.Typer(help="ADS MCP server CLI")
@@ -43,6 +43,21 @@ def setup_machine_cmd(
 def discover_cmd(machine: str = typer.Option(..., "--machine")) -> None:
     result = run_discovery(repo, machine)
     _print({"machine_id": machine, "discovered_count": len(result.discovered_tags)})
+
+
+@app.command("set-write-permission")
+def set_write_permission_cmd(
+    machine: str = typer.Option(..., "--machine"),
+    enabled: bool = typer.Option(..., "--enabled/--disabled"),
+) -> None:
+    cfg = set_write_permission(repo, machine_id=machine, enabled=enabled)
+    _print(
+        {
+            "machine_id": cfg.machine_id,
+            "write_enabled": not cfg.mcp.read_only,
+            "read_only": cfg.mcp.read_only,
+        }
+    )
 
 
 @app.command("list-groups")

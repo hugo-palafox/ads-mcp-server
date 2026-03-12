@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import ipaddress
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class PLCConfig(BaseModel):
@@ -10,6 +11,29 @@ class PLCConfig(BaseModel):
     ip: str
     ams_net_id: str
     ads_port: int = 851
+
+    @field_validator("ip")
+    @classmethod
+    def validate_ip(cls, value: str) -> str:
+        ipaddress.ip_address(value)
+        return value
+
+    @field_validator("ams_net_id")
+    @classmethod
+    def validate_ams_net_id(cls, value: str) -> str:
+        parts = value.split(".")
+        if len(parts) != 6:
+            raise ValueError("AMS Net ID must contain exactly 6 dot-separated octets.")
+
+        try:
+            octets = [int(part) for part in parts]
+        except ValueError as exc:
+            raise ValueError("AMS Net ID must contain only integer octets.") from exc
+
+        if any(octet < 0 or octet > 255 for octet in octets):
+            raise ValueError("AMS Net ID octets must be between 0 and 255.")
+
+        return value
 
 
 class PollingConfig(BaseModel):

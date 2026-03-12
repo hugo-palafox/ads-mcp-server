@@ -19,7 +19,9 @@ pip install -e .
 ## CLI commands
 
 ```bash
-ads-mcp setup-machine --machine Machine1 --ip 127.0.0.1 --ams-net-id 199.4.42.250.1.1 --ads-port 851
+ads-mcp setup-machine --machine Machine1 --ip 127.0.0.1 --ams-net-id 192.168.4.1.1.1 --ads-port 851
+ads-mcp set-write-permission --machine Machine1 --enabled
+ads-mcp set-write-permission --machine Machine1 --disabled
 ads-mcp discover --machine Machine1
 ads-mcp list-groups --machine Machine1
 ads-mcp list-tags --machine Machine1
