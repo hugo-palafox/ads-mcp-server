@@ -1,3 +1,28 @@
+## 0.1.3 - 2026-03-06
+
+### Added
+- Pre-save validation for `setup-machine`: pings IP, checks ADS connection, rejects if no symbols found — config not persisted on failure (`ads/validation.py`).
+- `read_tag_raw()` fallback for complex PLC types (enums, FBs, structs) when `read_by_name` raises `TypeError`.
+- `read_tags_batch()` using `read_list_by_name` for ~38x faster batch polling.
+- CLI `--raw` flag on `read` command and new `read-batch` command.
+- MCP tools `read_tag_hex` and `read_tags_batch`.
+- `AGENTS.md` converting the plan-implementation-tracker skill to opencode format.
+- New local skills: `changelog-manager`, `readme-maintainer`, `usage-maintainer`.
+- `plcprogram/` to `.gitignore`.
+
+### Changed
+- `setup-machine` CLI flag renamed from `--test-connection` to `--validate/--no-validate`.
+- `check_health()` reports `local_router` status before `connected`.
+
+### Fixed
+- N/A
+
+### Removed
+- N/A
+
+### Notes
+- Validation is enabled by default; use `--no-validate` to skip and save config unconditionally.
+
 ## 0.1.2 - 2026-03-06
 
 ### Added
