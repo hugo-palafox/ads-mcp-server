@@ -8,6 +8,7 @@ import typer
 from ads.diagnostics import run_diagnostics
 from ads.discovery import run_discovery
 from ads.reader import read_multiple_tags, read_multiple_tags_batch, read_single_tag, read_tag_raw
+from ads.validation import validate_setup
 from catalog.service import CatalogService
 from machine.repository import MachineRepository
 from machine.setup import set_write_permission, setup_machine
@@ -30,12 +31,20 @@ def setup_machine_cmd(
     ip: str = typer.Option(..., "--ip"),
     ams_net_id: str = typer.Option(..., "--ams-net-id"),
     ads_port: int = typer.Option(851, "--ads-port"),
-    test_connection: bool = typer.Option(True, "--test-connection/--no-test-connection"),
+    validate: bool = typer.Option(True, "--validate/--no-validate"),
 ) -> None:
-    cfg = setup_machine(repo, machine_id=machine, ip=ip, ams_net_id=ams_net_id, ads_port=ads_port)
+    if validate:
+        result = validate_setup(ip=ip, ams_net_id=ams_net_id, ads_port=ads_port)
+        for step in result["steps"]:
+            status = typer.style("OK", fg=typer.colors.GREEN) if step["passed"] else typer.style("FAIL", fg=typer.colors.RED)
+            typer.echo(f"  [{status}] {step['step']}: {step['message']}")
+        if not result["valid"]:
+            typer.echo(typer.style(f"  Aborted — {result['error']}", fg=typer.colors.RED))
+            raise typer.Exit(1)
+        cfg = setup_machine(repo, machine_id=machine, ip=ip, ams_net_id=ams_net_id, ads_port=ads_port, validate=False)
+    else:
+        cfg = setup_machine(repo, machine_id=machine, ip=ip, ams_net_id=ams_net_id, ads_port=ads_port)
     output: dict = {"machine": cfg.model_dump()}
-    if test_connection:
-        output["diagnostics"] = run_diagnostics(cfg)
     _print(output)
 
 

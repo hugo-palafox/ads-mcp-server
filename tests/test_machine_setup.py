@@ -17,6 +17,7 @@ class TestMachineSetup(unittest.TestCase):
                 ip="127.0.0.1",
                 ams_net_id="192.168.4.1.1.1",
                 ads_port=851,
+                validate=False,
             )
 
             machine = set_write_permission(repo, machine_id="M1", enabled=True)

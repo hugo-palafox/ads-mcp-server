@@ -24,7 +24,16 @@ def setup_machine(
     ip: str,
     ams_net_id: str,
     ads_port: int = 851,
+    validate: bool = True,
 ) -> MachineConfig:
+    if validate:
+        from ads.validation import validate_setup
+
+        result = validate_setup(ip=ip, ams_net_id=ams_net_id, ads_port=ads_port)
+        if not result["valid"]:
+            msg = result["error"] or "validation failed"
+            raise RuntimeError(msg)
+
     machine = create_machine_config(
         machine_id=machine_id,
         ip=ip,
