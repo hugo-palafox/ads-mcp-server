@@ -7,7 +7,7 @@ import typer
 
 from ads.diagnostics import run_diagnostics
 from ads.discovery import run_discovery
-from ads.reader import read_multiple_tags, read_single_tag
+from ads.reader import read_multiple_tags, read_multiple_tags_batch, read_single_tag, read_tag_raw
 from catalog.service import CatalogService
 from machine.repository import MachineRepository
 from machine.setup import set_write_permission, setup_machine
@@ -124,9 +124,22 @@ def memory_clear_cmd(machine: str = typer.Option(..., "--machine")) -> None:
 def read_cmd(
     machine: str = typer.Option(..., "--machine"),
     tag: str = typer.Option(..., "--tag"),
+    raw: bool = typer.Option(False, "--raw"),
 ) -> None:
     cfg = repo.get(machine)
-    _print(read_single_tag(cfg, tag))
+    if raw:
+        _print(read_tag_raw(cfg, tag))
+    else:
+        _print(read_single_tag(cfg, tag))
+
+
+@app.command("read-batch")
+def read_batch_cmd(
+    machine: str = typer.Option(..., "--machine"),
+    tags: list[str] = typer.Option(..., "--tag"),
+) -> None:
+    cfg = repo.get(machine)
+    _print(read_multiple_tags_batch(cfg, tags))
 
 
 @app.command("read-memory")

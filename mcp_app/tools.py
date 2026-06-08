@@ -7,7 +7,8 @@ from typing import Any
 from uuid import uuid4
 
 from ads.beckhoff_client import BeckhoffADSClient
-from ads.reader import read_multiple_tags, read_single_tag
+from ads.reader import read_multiple_tags, read_multiple_tags_batch, read_single_tag
+from ads.reader import read_tag_raw as read_tag_raw_impl
 from catalog.service import CatalogService
 from machine.models import MachineConfig
 from machine.repository import MachineRepository
@@ -64,6 +65,18 @@ def read_tag(machine_id: str, tag_name: str) -> dict:
 def read_tags(machine_id: str, tag_names: list[str]) -> dict:
     machine = repo.get(machine_id)
     return read_multiple_tags(machine, tag_names)
+
+
+def read_tag_hex(machine_id: str, tag_name: str) -> dict:
+    """Read a single tag as raw hex bytes. Use this for complex types (enums, function blocks, structures) that fail with read_tag. Returns value_hex and size_bytes instead of a typed value."""
+    machine = repo.get(machine_id)
+    return read_tag_raw_impl(machine, tag_name)
+
+
+def read_tags_batch(machine_id: str, tag_names: list[str]) -> dict:
+    """Read multiple tags in a single ADS request (~38x faster than read_tags). Best for polling many tags at once. Falls back to individual reads for complex types."""
+    machine = repo.get(machine_id)
+    return read_multiple_tags_batch(machine, tag_names)
 
 
 def read_memory(machine_id: str) -> dict:

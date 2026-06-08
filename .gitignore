@@ -24,3 +24,6 @@ htmlcov/
 # Local runtime machine/memory data (keep folder via .gitkeep)
 data/machines/*.json
 data/memory/*.json
+
+# PLC program files (local development only)
+plcprogram/

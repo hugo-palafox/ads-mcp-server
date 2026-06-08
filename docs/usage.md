@@ -52,6 +52,7 @@ ads-mcp --help
 
 ```powershell
 ads-mcp setup-machine --machine Machine1 --ip 127.0.0.1 --ams-net-id 192.168.4.1.1.1 --ads-port 851
+ads-mcp setup-machine --machine Machine1 --ip 127.0.0.1 --ams-net-id 199.4.42.250.1.1 --ads-port 851
 ```
 
 This creates `data/machines/M1.json`.

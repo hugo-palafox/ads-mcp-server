@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+from ctypes import c_ubyte
 from typing import Any
 
 try:
     import pyads
+    from pyads.pyads_ex import adsGetSymbolInfo
 except Exception:  # pragma: no cover
     pyads = None
+    adsGetSymbolInfo = None
 
 from machine.models import PLCConfig
 
@@ -14,6 +17,7 @@ class BeckhoffADSClient:
     def __init__(self, plc_config: PLCConfig) -> None:
         self.plc_config = plc_config
         self._conn = None
+        self._symbol_cache: dict[str, tuple[int, int, int]] = {}
 
     def connect(self) -> None:
         if pyads is None:
@@ -36,8 +40,6 @@ class BeckhoffADSClient:
         try:
             symbols = self._conn.get_all_symbols()  # type: ignore[union-attr]
         except UnicodeDecodeError:
-            # Some PLC symbol comments contain bytes pyads fails to decode with strict cp1252.
-            # Retry once with a tolerant decoder patch in pyads internals.
             symbols = self._get_all_symbols_with_safe_decode()
         out: list[dict[str, str]] = []
         for sym in symbols:
@@ -72,12 +74,46 @@ class BeckhoffADSClient:
             if utils_mod is not None and old_utils_decode is not None:
                 setattr(utils_mod, "decode_ads", old_utils_decode)
 
+    def _get_symbol_info(self, tag_name: str) -> tuple[int, int, int]:
+        cached = self._symbol_cache.get(tag_name)
+        if cached:
+            return cached
+        if adsGetSymbolInfo is not None and self._conn is not None:
+            info = adsGetSymbolInfo(self._conn._port, self._conn._adr, tag_name)
+            result = (info.iGroup, info.iOffs, info.size)
+            self._symbol_cache[tag_name] = result
+            return result
+        raise RuntimeError("Cannot get symbol info (pyads_ex not available).")
+
     def read_tag(self, tag_name: str) -> Any:
         self.connect()
-        return self._conn.read_by_name(tag_name)  # type: ignore[union-attr]
+        try:
+            return self._conn.read_by_name(tag_name)  # type: ignore[union-attr]
+        except TypeError:
+            pass
+        # Fallback: read raw bytes for complex types (enums, FBs, structures)
+        return self.read_tag_raw(tag_name)
+
+    def read_tag_raw(self, tag_name: str) -> dict[str, Any]:
+        self.connect()
+        ig, io, size = self._get_symbol_info(tag_name)
+        raw = self._conn.read(ig, io, c_ubyte * size)  # type: ignore[union-attr]
+        return {
+            "value_hex": bytes(raw).hex(),
+            "size_bytes": size,
+        }
 
     def read_tags(self, tag_names: list[str]) -> dict[str, Any]:
         return {tag: self.read_tag(tag) for tag in tag_names}
+
+    def read_tags_batch(self, tag_names: list[str]) -> dict[str, Any]:
+        self.connect()
+        try:
+            return self._conn.read_list_by_name(tag_names)  # type: ignore[union-attr]
+        except TypeError:
+            pass
+        # Fallback: individual reads for complex types
+        return self.read_tags(tag_names)
 
     def write_tag(self, tag_name: str, value: Any, plc_datatype: str | None = None) -> None:
         self.connect()
@@ -88,8 +124,9 @@ class BeckhoffADSClient:
         status = {"connected": False, "ip": self.plc_config.ip, "ams_net_id": self.plc_config.ams_net_id}
         try:
             self.connect()
-            status["connected"] = True
+            status["local_router"] = True
             status["symbol_count"] = len(self.browse_symbols())
+            status["connected"] = True
         except Exception as exc:  # pragma: no cover
             status["error"] = str(exc)
         finally:
