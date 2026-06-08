@@ -1,4 +1,4 @@
-## 0.1.3 - 2026-03-06
+## 0.1.3 - 2026-06-08
 
 ### Added
 - Pre-save validation for `setup-machine`: pings IP, checks ADS connection, rejects if no symbols found — config not persisted on failure (`ads/validation.py`).

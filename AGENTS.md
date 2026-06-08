@@ -11,6 +11,17 @@ ads-mcp --help
 ads-mcp serve
 ```
 
+## Before you commit
+
+Changelog **must** be updated before any commit with user-facing changes (CLI commands, MCP tools, models, validation, docs). Run through:
+
+1. `git diff` to see what changed
+2. Open `CHANGELOG.md`, prepend new version section at top
+3. Categorize changes under Added / Changed / Fixed / Removed
+4. Include file path references
+5. Verify `git diff CHANGELOG.md` shows only the new section
+6. Only then `git add` everything and commit
+
 ## Conventions
 
 - **Import style**: `from __future__ import annotations` at top of every file; stdlib first, then third-party, then local; type imports grouped separately

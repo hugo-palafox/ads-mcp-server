@@ -30,7 +30,7 @@ Each release follows the template:
 - <migration notes, caveats, context>
 ```
 
-Use `## 0.1.3 - 2026-03-06` style headers. Use `- N/A` for empty sections.
+Use `## <version> - <YYYY-MM-DD>` style headers. Use `- N/A` for empty sections.
 
 ## Rules
 
@@ -41,3 +41,7 @@ Use `## 0.1.3 - 2026-03-06` style headers. Use `- N/A` for empty sections.
 5. Keep descriptions brief — one line per entry.
 6. Place the new section at the top of the file, above all existing entries.
 7. After writing, verify: `git diff CHANGELOG.md` shows only the new section prepended.
+
+## Pre-commit must-run
+
+**Before any commit**, check `CHANGELOG.md` for new changes not yet logged. If the commit adds/modifies behavior visible to a user (CLI, MCP tool, model, validation, docs) and there is no entry for it, update CHANGELOG first. This is not optional — skip only if the change is purely internal refactoring with zero user-facing impact.
