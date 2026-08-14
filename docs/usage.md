@@ -8,7 +8,9 @@
 
 ## 1. Open terminal at project root
 
-`c:\Users\hugod\source\repos\ads-mcp-server`
+```powershell
+cd C:\path\to\ads-mcp-server
+```
 
 ## 2. Create and activate virtual environment
 
@@ -50,9 +52,10 @@ ads-mcp --help
 
 ## 5. Setup machine config
 
+Use example addresses in public documentation and replace them with values for your own lab environment.
+
 ```powershell
-ads-mcp setup-machine --machine Machine1 --ip 127.0.0.1 --ams-net-id 192.168.4.1.1.1 --ads-port 851
-ads-mcp setup-machine --machine Machine1 --ip 127.0.0.1 --ams-net-id 199.4.42.250.1.1 --ads-port 851
+ads-mcp setup-machine --machine Machine1 --ip 127.0.0.1 --ams-net-id 192.168.1.100.1.1 --ads-port 851
 ```
 
 This creates `data/machines/M1.json`.
